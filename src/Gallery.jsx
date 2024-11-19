@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import "./Gallery.css";
 import Filter from "./Filter";
+import { fetchSpotifyPlaylist, getSpotifyAccessToken } from "./spotifyService";
 
 const Gallery = () => {
 	const [images, setImages] = useState([]);
@@ -16,6 +17,8 @@ const Gallery = () => {
 	const [touchStartX, setTouchStartX] = useState(0);
 	const [touchEndX, setTouchEndX] = useState(0);
 	const [lightboxVisible, setLightboxVisible] = useState(false);
+	const [spotifyPlaylist, setSpotifyPlaylist] = useState(null);
+	const [spotifyAccessToken, setSpotifyAccessToken] = useState(null);
 
 	const toggleDarkMode = () => {
 		setDarkMode((prevMode) => !prevMode);
@@ -144,6 +147,17 @@ const Gallery = () => {
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [selectedImage]);
 
+	useEffect(() => {
+		const fetchSpotifyData = async () => {
+			const token = await getSpotifyAccessToken();
+			setSpotifyAccessToken(token);
+			const playlist = await fetchSpotifyPlaylist(token);
+			setSpotifyPlaylist(playlist);
+		};
+
+		fetchSpotifyData();
+	}, []);
+
 	return (
 		<>
 			<header className="gallery-header">
@@ -154,6 +168,19 @@ const Gallery = () => {
 					{darkMode ? "🌞 Light Mode" : "🌙 Dark Mode"}
 				</button>
 				<Filter onFilterChange={handleFilterChange} />
+				{spotifyPlaylist && (
+					<div className="spotify-player">
+						<h2>🎵 Now Playing: {spotifyPlaylist.name}</h2>
+						<iframe
+							src={`https://open.spotify.com/embed/playlist/${spotifyPlaylist.id}`}
+							width="300"
+							height="80"
+							frameBorder="0"
+							allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+							allowtransparency="true"
+						></iframe>
+					</div>
+				)}
 				<div className="sorting-container">
 					<select onChange={(e) => handleSortChange(e.target.value)}>
 						<option value="relevance">Sort by Relevance</option>

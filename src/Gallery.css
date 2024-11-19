@@ -262,6 +262,23 @@
 	outline: 2px solid #007bff;
 	outline-offset: 2px;
 }
+/* spotify */
+.spotify-player {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 20px 0;
+	background-color: #1db954;
+	color: white;
+	padding: 10px;
+	border-radius: 10px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.spotify-player h2 {
+	margin-bottom: 10px;
+	font-size: 1.2rem;
+}
 
 @media (max-width: 768px) {
 	/* For tablets and smaller devices, show 2 columns */
